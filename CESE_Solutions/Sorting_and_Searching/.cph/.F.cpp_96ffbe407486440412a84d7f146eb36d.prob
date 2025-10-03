@@ -1,0 +1,1 @@
+{"name":"Local: F","url":"c:\\Codes\\BJTU\\Sorting_and_Searching\\F.cpp","tests":[{"id":1757517420139,"input":"3\n3 5\n4 9\n5 8","output":""},{"id":1757517869606,"input":"6\n1 5\n2 3\n3 4\n4 6\n5 7\n6 8","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Codes\\BJTU\\Sorting_and_Searching\\F.cpp","group":"local","local":true}

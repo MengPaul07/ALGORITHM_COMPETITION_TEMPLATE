@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    "*.cpp": "cpp",
+    "vector": "cpp",
+    "iostream": "cpp",
+    "xutility": "cpp",
+    "valarray": "cpp",
+    "xiosbase": "cpp",
+    "algorithm": "cpp",
+    "chrono": "cpp",
+    "limits": "cpp",
+    "random": "cpp",
+    "utility": "cpp"
+  }
+}

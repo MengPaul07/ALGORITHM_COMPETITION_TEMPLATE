@@ -1,0 +1,1 @@
+{"name":"Local: Q","url":"c:\\Codes\\BJTU\\Dynamic_Programming\\Q.cpp","tests":[{"id":1758027315925,"input":"8\n7 3 5 3 6 2 9 8","output":""},{"id":1758027942619,"input":"4\n1 3 4 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Codes\\BJTU\\Dynamic_Programming\\Q.cpp","group":"local","local":true}
