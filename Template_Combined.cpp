@@ -561,53 +561,7 @@ namespace DataStructure
         }
     }
 
-    namespace FenwickTree
-    {
-        // 树状数组 (Binary Indexed Tree)
-        // 支持单点修改和区间查询
-        const int N = 200005;
-        long long tree[N];
-        int n;
 
-        int lowbit(int x)
-        {
-            return x & (-x);
-        }
-
-        // 初始化
-        void init(int size)
-        {
-            n = size;
-            for (int i = 0; i <= n; i++)
-                tree[i] = 0;
-        }
-
-        // 单点更新：index 位置加上 delta
-        void add(int index, long long delta)
-        {
-            for (int i = index; i <= n; i += lowbit(i))
-            {
-                tree[i] += delta;
-            }
-        }
-
-        // 查询前缀和：[1, index]
-        long long ask(int index)
-        {
-            long long sum = 0;
-            for (int i = index; i > 0; i -= lowbit(i))
-            {
-                sum += tree[i];
-            }
-            return sum;
-        }
-
-        // 查询区间和：[left, right]
-        long long query(int left, int right)
-        {
-            return ask(right) - ask(left - 1);
-        }
-    }
 
     namespace STTable
     {
