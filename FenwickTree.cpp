@@ -1,7 +1,3 @@
-#include<bits/stdc++.h>
-using namespace std;
-
-
 int lowbit(int x)
 {
     return x & (-x);
@@ -12,12 +8,12 @@ int lowbit(int x)
     // 树状数组 (Binary Indexed Tree)
     // 支持单点修改和区间查询
     const int N = 200005;
-    long long tree[N];
+    int tree[N];
     int n;
 
 
     // 单点更新：index 位置加上 delta
-    void add(int index, long long delta)
+    void add(int index, int delta)
     {
         for (int i = index; i <= n; i += lowbit(i))
         {
@@ -26,9 +22,9 @@ int lowbit(int x)
     }
 
     // 查询前缀和：[1, index]
-    long long ask(int index)
+    int ask(int index)
     {
-        long long sum = 0;
+        int sum = 0;
         for (int i = index; i > 0; i -= lowbit(i))
         {
             sum += tree[i];
@@ -37,7 +33,7 @@ int lowbit(int x)
     }
 
     // 查询区间和：[left, right]
-    long long query(int left, int right)
+    int query(int left, int right)
     {
         return ask(right) - ask(left - 1);
     }
@@ -49,7 +45,7 @@ namespace FenwickTree2D
     // 二维树状数组 (2D Binary Indexed Tree)
     // 支持单点修改和矩形区域查询
     const int N = 505;
-    long long tree[N][N];
+    int tree[N][N];
     int n, m;
 
     // 初始化
@@ -63,7 +59,7 @@ namespace FenwickTree2D
     }
 
     // 单点更新：在 (x, y) 位置加上 delta
-    void add(int x, int y, long long delta)
+    void add(int x, int y, int delta)
     {
         for (int i = x; i <= n; i += lowbit(i))
         {
@@ -75,9 +71,9 @@ namespace FenwickTree2D
     }
 
     // 查询前缀和：[1, 1] 到 (x, y)
-    long long ask(int x, int y)
+    int ask(int x, int y)
     {
-        long long sum = 0;
+        int sum = 0;
         for (int i = x; i > 0; i -= lowbit(i))
         {
             for (int j = y; j > 0; j -= lowbit(j))
@@ -89,7 +85,7 @@ namespace FenwickTree2D
     }
 
     // 查询矩形区域和：[x1, y1] 到 [x2, y2]
-    long long query(int x1, int y1, int x2, int y2)
+    int query(int x1, int y1, int x2, int y2)
     {
         return ask(x2, y2) - ask(x1 - 1, y2) - ask(x2, y1 - 1) + ask(x1 - 1, y1 - 1);
     }

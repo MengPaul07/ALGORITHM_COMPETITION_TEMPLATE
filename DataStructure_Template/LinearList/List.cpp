@@ -1,66 +1,49 @@
-#include<bits/stdc++.h>
+#include <algorithm>
+#include <array>
 
-// ==================================C-Type=========================================
-
-// 创建线性表 结构体法 长度为20 数据类型为int
-#define MAXSIZE 20
-typedef int ElemType;
-
-typedef struct{
-    ElemType data[MAXSIZE];
-    int length;
-} Sqlist;
-
-
-//获得元素操作
-#define OK 1
-#define ERROR 0
-typedef int Status;
-
-Status GetElem(Sqlist L,int i,ElemType *e){
-    if(L.length==0||i<1||i>L.length)
-        return ERROR;
-    *e = L.data[i - 1];
-        return OK;
-}
-
-//插入元素操作
-Status ListInsert(Sqlist *L,int i,ElemType e){
-    int k;
-    if(L->length==MAXSIZE)
-        return ERROR;
-    if(i<1||i>L->length+1)
-        return ERROR;
-    
-    if(i<=L->length){
-        for (int k = L->length - 1; k >= i - 1;k--){
-            L->data[k + 1] = L->data[k];
-        }
-    }
-    L->data[i - 1] = e;
-    L->length++;
-    return OK;
-}
-
-//删除元素操作
-Status ListInsert(Sqlist *L, int i, ElemType *e)
+namespace LinearListArray
 {
-    int k;
-    if (L->length == 0)
-        return ERROR;
-    if (i < 1 || i > L->length)
-        return ERROR;
+    const int MAXSIZE = 20;
 
-    *e = L->data[i - 1];
-    if (i <= L->length)
+    struct List
     {
-        for (int k = i; k < L->length; k++)
-        {
-            L->data[k-1] = L->data[k];
-        }
+        std::array<int, MAXSIZE> data{};
+        int len = 0;
+    };
+
+    // 位置 pos 使用 1-based，下同
+    bool get(const List &L, int pos, int &value)
+    {
+        if (pos < 1 || pos > L.len)
+            return false;
+        value = L.data[pos - 1];
+        return true;
     }
-    L->length--;
-    return OK;
+
+    bool insert(List &L, int pos, int value)
+    {
+        if (L.len >= MAXSIZE)
+            return false;
+        if (pos < 1 || pos > L.len + 1)
+            return false;
+
+        for (int i = L.len - 1; i >= pos - 1; i--)
+            L.data[i + 1] = L.data[i];
+        L.data[pos - 1] = value;
+        L.len++;
+        return true;
+    }
+
+    bool erase(List &L, int pos, int &value)
+    {
+        if (pos < 1 || pos > L.len)
+            return false;
+        value = L.data[pos - 1];
+        for (int i = pos; i < L.len; i++)
+            L.data[i - 1] = L.data[i];
+        L.len--;
+        return true;
+    }
 }
 
 
