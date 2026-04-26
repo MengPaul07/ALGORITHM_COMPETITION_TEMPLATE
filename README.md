@@ -1,14 +1,6 @@
-# ACM_COMPETITION_TEMPLATE
-
-Used as my personal codes template for ACM learning
+# ALGORITHM_COMPETITION_TEMPLATE
 
 Welcome to MengPaul's personal code template.Hope you can get some useful information and buff your ability to codeing.Forgive my broken Engilsh plz.Thanks a lot!
-## Features
-
-- 📚 Well-organized code templates for ACM competitions
-- 🚀 Quick start for new problems and contests
-- 🛠️ Common algorithms and data structures included
-- 📝 Easy to customize and extend
 
 ## Getting Started
 
@@ -18,17 +10,6 @@ Welcome to MengPaul's personal code template.Hope you can get some useful inform
     ```
 2. **Browse the templates and pick what you need.**
 3. **Start coding and practicing!**
-
-## Directory Structure
-
-```
-ACM_COMPETITION_TEMPLATE/
-├── algorithms/
-├── data_structures/
-├── templates/
-├── README.md
-└── ...
-```
 
 ## Contributing
 
