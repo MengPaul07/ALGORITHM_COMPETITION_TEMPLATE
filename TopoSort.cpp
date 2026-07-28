@@ -1,18 +1,7 @@
 namespace TopoSort
 {
     int n;
-    vector<vector<int>> adj;
-
-    void init(int nodeCount)
-    {
-        n = nodeCount;
-        adj.assign(n + 1, {});
-    }
-
-    void addEdge(int u, int v)
-    {
-        adj[u].push_back(v);
-    }
+    vector<vector<int>> adj(n + 1);
 
     // Kahn 算法：若存在环，返回空数组
     vector<int> sort()

@@ -31,18 +31,6 @@ namespace Math
         return res;
     }
 
-    // qpow：竞赛里常用写法
-    int qpow(int base, int exp, int mod = MOD)
-    {
-        return power(base, exp, mod);
-    }
-
-    // 快速逆元：要求 mod 为质数，且 a % mod != 0
-    int inv(int a, int mod = MOD)
-    {
-        return qpow((a % mod + mod) % mod, mod - 2, mod);
-    }
-
     // 快速幂 a^b
     int power(int base, int exp)
     {
@@ -164,37 +152,52 @@ namespace Math
         return result;
     }
 
+
+    
+    // 快速逆元：要求 mod 为质数，且 a % mod != 0
+    int inv(int a, int mod = MOD)
+    {
+        return qpow((a % mod + mod) % mod, mod - 2, mod);
+    }
+
+    //逆元递推
+    void invs(int n, int mod = MOD)
+    {
+        vector<int> inv(n + 1);
+        inv[1] = 1;
+        for (int i = 2; i <= n; i++)
+        {
+            inv[i] = (int)(1LL * (mod - mod / i) * inv[mod % i] % mod);
+        }
+    }
+
+
     // 组合数预处理：C(n, k) = fac[n] * invfac[k] * invfac[n-k] % mod
     namespace Comb
     {
-        vector<int> fac, invfac;
-        int max_n = 0;
-        int mod = MOD;
+        vector<int> fac(max_n + 1), invfac(max_n + 1);
 
-        void init(int n, int m = MOD)
+        for (int i = 1; i <= max_n; i++)
         {
-            max_n = n;
-            mod = m;
-            fac.assign(max_n + 1, 1);
-            invfac.assign(max_n + 1, 1);
-
-            for (int i = 1; i <= max_n; i++)
-            {
-                fac[i] = (int)(1LL * fac[i - 1] * i % mod);
-            }
-            invfac[max_n] = qpow(fac[max_n], mod - 2, mod);
-            for (int i = max_n; i >= 1; i--)
-            {
-                invfac[i - 1] = (int)(1LL * invfac[i] * i % mod);
-            }
+            fac[i] = (int)(1LL * fac[i - 1] * i % mod);
         }
+
+        invfac[max_n] = qpow(fac[max_n], mod - 2, mod);
+
+        for (int i = max_n; i >= 1; i--)
+        {
+            invfac[i - 1] = (int)(1LL * invfac[i] * i % mod);
+        }
+    
 
         int C(int n, int k)
         {
             if (k < 0 || k > n)
                 return 0;
+
             if (n > max_n)
                 return 0;
+
             return (int)(1LL * fac[n] * invfac[k] % mod * invfac[n - k] % mod);
         }
     }

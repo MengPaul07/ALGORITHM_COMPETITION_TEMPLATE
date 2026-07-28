@@ -1,3 +1,6 @@
+#include<bits/stdc++.h>
+using namespace std;
+
 namespace MonotonicStack
 {
     // 单调栈：寻找每个元素右边第一个比它大的元素的索引
