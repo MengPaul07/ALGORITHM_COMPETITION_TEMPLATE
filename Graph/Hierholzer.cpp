@@ -61,27 +61,27 @@
             return;
         }
 
-        vector<int> it(n + 1),path;
-        auto dfs = [&](auto dfs,int u) -> void {
-            while(it[u] < sz(adj[u])){
-                int v = adj[u][it[u]];
-                it[u]++;
-                dfs(dfs,v);
+            vector<int> it(n + 1),path;
+            auto dfs = [&](auto dfs,int u) -> void {
+                while(it[u] < sz(adj[u])){
+                    int v = adj[u][it[u]];
+                    it[u]++;
+                    dfs(dfs,v);
+                }
+                path.push_back(u);
+            };
+            dfs(dfs,start);
+
+            if(sz(path) != m + 1){
+                cout << "No" << endl;
+                return;
             }
-            path.push_back(u);
-        };
-        dfs(dfs,start);
 
-        if(sz(path) != m + 1){
-            cout << "No" << endl;
-            return;
-        }
-
-        reverse(all(path));
-        for(auto i : path){
-            cout << i << " ";
-        }
-        cout << endl;
+            reverse(all(path));
+            for(auto i : path){
+                cout << i << " ";
+            }
+            cout << endl;
 
 
     }
