@@ -248,3 +248,69 @@ namespace DynamicSegmentTree
         return ans;
     }
 }
+
+
+// zkw SegmentTree max
+
+const int N = 600005;
+
+int tree[N << 2];
+int size_;
+
+void build(vector<int> &a){
+    int n = sz(a) - 1;
+    size_ = 1;
+    while(size_ < n) size_ <<= 1;
+
+    for(int i = 1;i <= n;i++)
+        tree[size_ + i - 1] = a[i];
+
+    for(int i = size_ - 1;i;i--)
+        tree[i] = max(tree[i << 1],tree[i << 1 | 1]);
+}
+
+void add(int pos,int val){
+    pos += size_ - 1;
+    tree[pos] += val;
+
+    while(pos >>= 1)
+        tree[pos] = max(tree[pos << 1],tree[pos << 1 | 1]);
+}
+
+int query(int l,int r)
+{
+    int ans = -INF;
+    l += size_ - 1;
+    r += size_ - 1;
+    while(l <= r)
+    {
+        if(l & 1)
+            ans = max(ans,tree[l++]);
+        if(!(r & 1))
+            ans = max(ans,tree[r--]);
+        l >>= 1;
+        r >>= 1;
+    }
+    return ans;
+}
+
+int find(int l,int x,int node,int L,int R){
+    if(R < l || tree[node] < x)
+        return -1;
+
+    if(L == R)
+        return L;
+
+    int mid = (L + R) >> 1;
+
+    int res = find(l,x,node << 1,L,mid);
+
+    if(res != -1)
+        return res;
+
+    return find(l,x,node << 1 | 1,mid + 1,R);
+}
+
+int find(int l,int x){
+    return find(l,x,1,1,size_);
+}
