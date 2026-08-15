@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 struct Matrix{
@@ -9,7 +9,6 @@ struct Matrix{
 
     inline int add(int x, int y) const { return (x + y) % MOD; }
     inline int mul(int x, int y) const { return (int)(x * y) % MOD; }
-
 
     Matrix operator*(const Matrix& other) const {
         Matrix res(n);
@@ -36,3 +35,18 @@ struct Matrix{
         return res;
     }
 };
+
+void solve(){
+    int n;cin >> n;
+    Matrix base(2);
+
+    base.a[0][0] = 1;
+    base.a[0][1] = 1;
+    base.a[1][0] = 1;
+    base.a[1][1] = 0;
+
+    Matrix ans = base.pow(n);
+    cout << ans.a[0][1] << endl;
+
+}
+

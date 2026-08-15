@@ -16,6 +16,19 @@ namespace Math
         return a / gcd(a, b) * b;
     }
 
+    // exgcd
+    int exgcd(int a, int b, int &x, int &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+
+    int g = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return g;
+}
+
     // 快速幂 a^b % mod
     int power(int base, int exp, int mod)
     {
@@ -152,56 +165,147 @@ namespace Math
         return result;
     }
 
+// EX-EULER 
+int euler_phi(int n)
+{
+    int res = n;
+    for (int i = 2; i * i <= n; i++)
+    {
+        if (n % i == 0)
+        {
+            while (n % i == 0)
+                n /= i;
+            res -= res / i;
+        }
+    }
+    if (n > 1)
+        res -= res / n;
+    return res;
+}
 
+int qpow(int a,int b,int m){
+    int ans = 1 % m;
+    a %= m;
+    while(b){
+        if(b & 1){
+            ans = ans * a % m;
+        }
+        a = a * a % m;
+        b >>= 1;
+    }
+    return ans;
+}
+
+void solve(){
+    int a,m;string b;cin >> a >> m >> b;
+    int phi = euler_phi(m);
+
+    auto get = [&](string s,int mod) {
+        int res = 0;
+        for(char c : s){
+            res = (res * 10 + c - '0') % mod;
+        }
+        return res;
+    };
     
-    // 快速逆元：要求 mod 为质数，且 a % mod != 0
-    int inv(int a, int mod = MOD)
-    {
-        return qpow((a % mod + mod) % mod, mod - 2, mod);
+    int M = get(b,phi);
+
+    string sp = to_string(phi);
+
+    bool big = 0;
+    if(sz(b) != sz(sp)){
+        big = sz(b) > sz(sp);
+    }
+    else{
+        big = b >= sp;
     }
 
-    //逆元递推
-    void invs(int n, int mod = MOD)
-    {
-        vector<int> inv(n + 1);
-        inv[1] = 1;
-        for (int i = 2; i <= n; i++)
-        {
-            inv[i] = (int)(1LL * (mod - mod / i) * inv[mod % i] % mod);
-        }
-    }
-
-
-    // 组合数预处理：C(n, k) = fac[n] * invfac[k] * invfac[n-k] % mod
-    namespace Comb
-    {
-        vector<int> fac(max_n + 1), invfac(max_n + 1);
-
-        for (int i = 1; i <= max_n; i++)
-        {
-            fac[i] = (int)(1LL * fac[i - 1] * i % mod);
-        }
-
-        invfac[max_n] = qpow(fac[max_n], mod - 2, mod);
-
-        for (int i = max_n; i >= 1; i--)
-        {
-            invfac[i - 1] = (int)(1LL * invfac[i] * i % mod);
-        }
+    if(big)M += phi;
     
-
-        int C(int n, int k)
-        {
-            if (k < 0 || k > n)
-                return 0;
-
-            if (n > max_n)
-                return 0;
-
-            return (int)(1LL * fac[n] * invfac[k] % mod * invfac[n - k] % mod);
-        }
-    }
+    cout << qpow(a,M,m) << endl;
 }
 
 
 
+// CRT
+using i128 = __int128_t;
+
+int exgcd(int a, int b, int &x, int &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+
+    int g = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return g;
+}
+
+void solve(){
+    int n;cin >> n;
+    vector<int> a(n),b(n);
+    int M = 1;
+    for(int i = 0;i < n;i++){
+        cin >> a[i] >> b[i];
+        M *= a[i];
+    }
+
+    int ans = 0;
+    for(int i = 0;i < n;i++){
+        int Mi = M / a[i];
+        int x,y;
+        exgcd(Mi,a[i],x,y);
+
+        x = (x % a[i] + a[i]) % a[i];
+
+        ans += (i128)b[i] * Mi % M * x % M;
+        ans %= M;
+    }
+    cout << ans << endl;
+}
+
+// EXCRT
+using i128 = __int128_t;
+
+int exgcd(int a, int b, int &x, int &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int g = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return g;
+}
+
+void solve(){
+    int n;cin >> n;
+    vector<int> a(n),b(n);
+    int M = 1;
+    for(int i = 0;i < n;i++){
+        cin >> a[i] >> b[i];
+    }
+
+    int ans = 0;
+    for(int i = 0;i < n;i++){
+        int x,y;
+        int g = exgcd(M,a[i],x,y);
+        int d = b[i] - ans;
+    
+        if(d % g != 0){
+            cout << -1 << endl;
+            return;
+        }
+
+        int mod2 = a[i] / g;
+
+        i128 k = (i128)(d / g) * x % mod2;
+        if(k < 0) k+= mod2;
+
+        i128 lcm = (i128)(M / g) * a[i];
+        ans = (int)((i128)ans + (i128)M * k) % lcm;
+        M = (int)lcm;
+    }
+    cout << ans << endl;
+}
