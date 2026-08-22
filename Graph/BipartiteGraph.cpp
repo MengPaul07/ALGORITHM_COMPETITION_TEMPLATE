@@ -52,53 +52,37 @@ namespace BipartiteColoring
     }
 }
 
-namespace Hungarian
-{
-    const int SIZE = 1010;
-    int n1, n2;
-    vector<int> edge[SIZE]; // edge from left part [1..n1] to right part [1..n2]
-    int match[SIZE];        // match[v]: right node v matched with left node
-    bool vis[SIZE];
+// matching
+void solve(){
+    int n,m,e;cin >> n >> m >> e;
+    vector<vector<int>> adj(n + m + 1);
 
-    void init(int leftSize, int rightSize)
-    {
-        n1 = leftSize;
-        n2 = rightSize;
-        for (int i = 1; i <= n1; i++)
-            edge[i].clear();
-        memset(match, 0, sizeof(match));
+    for(int i = 0;i < e;i++){
+        int u,v;
+        cin >> u >> v;
+        adj[u]. push_back(v);       
     }
 
-    void addEdge(int u, int v)
-    {
-        edge[u].push_back(v);
-    }
+    vector<int> vis(n + m + 1);
+    vector<int> match(n + m + 1);
 
-    bool find(int u)
-    {
-        for (auto v : edge[u])
-        {
-            if (vis[v])
-                continue;
-            vis[v] = true;
-            if (match[v] == 0 || find(match[v]))
-            {
+    auto find = [&](auto find,int u) -> bool {
+        for(auto v : adj[u]){
+            if(vis[v])continue;
+            vis[v] = 1;
+            if(match[v] == 0 || find(find,match[v])){
                 match[v] = u;
-                return true;
+                return 1;
             }
         }
-        return false;
+        return 0;
+    };
+
+    int cnt = 0;
+    for(int i = 1;i <= n;i++){
+        vis.assign(n + m + 1,0);
+        if(find(find,i))cnt++;
     }
 
-    int maxMatch()
-    {
-        int cnt = 0;
-        for (int i = 1; i <= n1; i++)
-        {
-            memset(vis, false, sizeof(vis));
-            if (find(i))
-                cnt++;
-        }
-        return cnt;
-    }
+    cout << cnt << endl;
 }

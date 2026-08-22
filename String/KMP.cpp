@@ -1,4 +1,7 @@
 // KMP Algorithm
+#include<bits/stdc++.h>
+using namespace std;
+
 namespace KMP
 {
 vector<int> buildLps(const string &pat) {
