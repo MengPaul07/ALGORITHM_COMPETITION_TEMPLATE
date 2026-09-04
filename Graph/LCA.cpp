@@ -1,11 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-#define endl "\n"
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define sz(x) (int)(x).size()
 
 const int N = 200005;
 const int LOG = 20;
@@ -26,7 +21,6 @@ void dfs(int u,int f){
         dfs(v,u);
     }
 }
-
 
 int lca(int x,int y){
     if(dep[x] < dep[y])
@@ -49,8 +43,6 @@ int lca(int x,int y){
     return fa[x][0];
 }
 
-
-
 void solve(){
     int n;
     cin >> n;
@@ -71,16 +63,55 @@ void solve(){
 }
 
 
-signed main(){
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-#ifdef LOCAL
-    freopen("in.txt","r",stdin);
-    freopen("out.txt","w",stdout);
-#endif
-    int t = 1;
-    // cin >> t;
-    while(t--)
-        solve();
-    return 0;
+struct EDGE {
+    int v,w;
+};
+
+vector<EDGE> adj[N];
+int fa[N][LOG];
+int mx[N][LOG];
+int dep[N];
+
+void dfs(int u,int f,int w){
+    fa[u][0] = f;
+    mx[u][0] = w;
+    
+    dep[u] = dep[f] + 1;
+    for(int i = 1;i < LOG;i++){
+        fa[u][i] = fa[fa[u][i-1]][i-1];
+        mx[u][i] = max(mx[u][i-1],mx[fa[u][i-1]][i-1]);
+    }
+    for(auto [v,w]:adj[u]){
+        if(v == f)
+            continue;
+        dfs(v,u,w);
+    }
+}
+
+int qmx(int x,int y){
+    int ans = 0;
+    if(dep[x] < dep[y])
+        swap(x,y);
+    // 把 x 跳到和 y 同一深度
+    for(int i = LOG-1;i >= 0;i--){
+        if(dep[fa[x][i]] >= dep[y]){
+            ans = max(ans,mx[x][i]);
+            x = fa[x][i];
+        }
+    }
+    if(x == y)
+        return ans;
+
+    // 一起向上跳
+    for(int i = LOG-1;i >= 0;i--){
+        if(fa[x][i] != fa[y][i]){
+            ans = max(ans,mx[x][i]);
+            ans = max(ans,mx[y][i]);
+            x = fa[x][i];
+            y = fa[y][i];
+        }
+    }
+    ans = max(ans,mx[x][0]);
+    ans = max(ans,mx[y][0]);
+    return ans;
 }

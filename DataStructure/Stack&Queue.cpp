@@ -9,7 +9,7 @@ namespace MonotonicStack
     {
         int n = nums.size();
         vector<int> res(n, -1);
-        stack<int> s; // 存储索引
+        stack<int> s; 
         for (int i = 0; i < n; ++i)
         {
             while (!s.empty() && nums[s.top()] < nums[i])
@@ -28,22 +28,19 @@ namespace MonotonicQueue
     // 单调队列：滑动窗口最大值
     vector<int> maxSlidingWindow(const vector<int> &nums, int k)
     {
-        deque<int> q; // 存储索引
+        deque<int> q; 
         vector<int> res;
         for (int i = 0; i < nums.size(); ++i)
         {
-            // 移除滑出窗口的元素
             if (!q.empty() && q.front() == i - k)
             {
                 q.pop_front();
             }
-            // 保持队列单调递减（队首最大）
             while (!q.empty() && nums[q.back()] < nums[i])
             {
                 q.pop_back();
             }
             q.push_back(i);
-            // 记录窗口最大值
             if (i >= k - 1)
             {
                 res.push_back(nums[q.front()]);
@@ -51,3 +48,4 @@ namespace MonotonicQueue
         }
         return res;
     }
+}

@@ -21,7 +21,6 @@ void insert(int x,int id){
 }
 
 
-
 void solve(){
     int n;cin >> n;
     vector<int> a(n);

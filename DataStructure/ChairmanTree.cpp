@@ -113,6 +113,17 @@ int query(int u,int v,int l,int r,int k){
         return query(tree[u].r,tree[v].r,mid + 1,r,k - cnt);
 }
 
+int query2(int u,int v,int l,int r,int k){
+    if(l == r)
+        return tree[u].sum - tree[v].sum;
+    int mid = (l + r) >> 1;
+
+    if(k <= mid)
+        return query2(tree[u].l,tree[v].l,l,mid,k);
+    else
+        return query2(tree[u].r,tree[v].r,mid + 1,r,k);
+}
+
 void solve(){
     int n,m;
     cin >> n >> m;

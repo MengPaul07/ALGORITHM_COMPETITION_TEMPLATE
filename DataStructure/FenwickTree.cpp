@@ -1,27 +1,26 @@
-int lowbit(int x)
-{
-    return x & (-x);
-}
+#include<bits/stdc++.h>
+using namespace std;
 
- namespace FenwickTree
+
+
+namespace FenwickTree
 {
-    // 树状数组 (Binary Indexed Tree)
-    // 支持单点修改和区间查询
     const int N = 200005;
     int tree[N];
     int n;
 
+    int lowbit(int x)
+    {
+        return x & (-x);
+    }
 
-    // 单点更新：index 位置加上 delta
-    void add(int index, int delta)
+    void add(int index, int d)
     {
         for (int i = index; i <= n; i += lowbit(i))
         {
-            tree[i] += delta;
+            tree[i] += d;
         }
     }
-
-    // 查询前缀和：[1, index]
     int ask(int index)
     {
         int sum = 0;
@@ -32,7 +31,6 @@ int lowbit(int x)
         return sum;
     }
 
-    // 查询区间和：[left, right]
     int query(int left, int right)
     {
         return ask(right) - ask(left - 1);
@@ -58,14 +56,14 @@ namespace FenwickTree2D
                 tree[i][j] = 0;
     }
 
-    // 单点更新：在 (x, y) 位置加上 delta
-    void add(int x, int y, int delta)
+    // 单点更新：在 (x, y) 位置加上 d
+    void add(int x, int y, int d)
     {
         for (int i = x; i <= n; i += lowbit(i))
         {
             for (int j = y; j <= m; j += lowbit(j))
             {
-                tree[i][j] += delta;
+                tree[i][j] += d;
             }
         }
     }
@@ -99,11 +97,11 @@ namespace FenwickTreeKth
     const int N = 1e5 + 5;
     int tree[N];
 
-    void update(int index, int delta, int n)
+    void update(int index, int d, int n)
     {
         for (int i = index; i <= n; i += lowbit(i))
         {
-            tree[i] += delta;
+            tree[i] += d;
         }
     }
 
