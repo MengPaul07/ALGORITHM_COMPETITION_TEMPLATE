@@ -1,51 +1,42 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-namespace MonotonicStack
+#define int long long
+
+const int N = 200005;
+
+int a[N];
+int nxt[N];
+int stk[N], top;
+int windowMax[N];
+int que[N], head, tail;
+
+// 每个位置右侧第一个严格更大的位置；不存在时为 -1
+void nextGreater(int n)
 {
-    // 单调栈：寻找每个元素右边第一个比它大的元素的索引
-    // 如果不存在，则为 -1
-    vector<int> nextGreaterElement(const vector<int> &nums)
+    top = 0;
+    for (int i = n; i >= 1; i--)
     {
-        int n = nums.size();
-        vector<int> res(n, -1);
-        stack<int> s; 
-        for (int i = 0; i < n; ++i)
-        {
-            while (!s.empty() && nums[s.top()] < nums[i])
-            {
-                res[s.top()] = i;
-                s.pop();
-            }
-            s.push(i);
-        }
-        return res;
+        while (top && a[stk[top]] <= a[i])
+            top--;
+        nxt[i] = top ? stk[top] : -1;
+        stk[++top] = i;
     }
 }
 
-namespace MonotonicQueue
+// 滑动窗口最大值，结果保存在 windowMax[1..n-k+1]
+void slidingWindowMax(int n, int k)
 {
-    // 单调队列：滑动窗口最大值
-    vector<int> maxSlidingWindow(const vector<int> &nums, int k)
+    head = tail = 1;
+    for (int i = 1; i <= n; i++)
     {
-        deque<int> q; 
-        vector<int> res;
-        for (int i = 0; i < nums.size(); ++i)
-        {
-            if (!q.empty() && q.front() == i - k)
-            {
-                q.pop_front();
-            }
-            while (!q.empty() && nums[q.back()] < nums[i])
-            {
-                q.pop_back();
-            }
-            q.push_back(i);
-            if (i >= k - 1)
-            {
-                res.push_back(nums[q.front()]);
-            }
-        }
-        return res;
+        while (head < tail && que[head] <= i - k)
+            head++;
+        while (head < tail && a[que[tail - 1]] <= a[i])
+            tail--;
+
+        que[tail++] = i;
+        if (i >= k)
+            windowMax[i - k + 1] = a[que[head]];
     }
 }

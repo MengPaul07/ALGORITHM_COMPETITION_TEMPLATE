@@ -1,46 +1,44 @@
-namespace STTable
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 200005;
+const int LOG = 20;
+
+int a[N];
+int stMax[N][LOG], stMin[N][LOG];
+int lg2_[N];
+
+void initST(int n)
 {
-    // ST 表 (Sparse Table)
-    // a 下标从 1 开始；支持 O(1) 查询区间最值
-    const int N = 50005;
-    const int LOGN = 20;
-    int stMax[N][LOGN];
-    int stMin[N][LOGN];
-    int lg2v[N];
-    int n;
+    lg2_[1] = 0;
+    for (int i = 2; i <= n; i++)
+        lg2_[i] = lg2_[i >> 1] + 1;
 
-    void init(const vector<int> &a, int size)
+    for (int i = 1; i <= n; i++)
+        stMax[i][0] = stMin[i][0] = a[i];
+
+    for (int j = 1; j < LOG; j++)
     {
-        n = size;
-        lg2v[1] = 0;
-        for (int i = 2; i <= n; i++)
-            lg2v[i] = lg2v[i >> 1] + 1;
-
-        for (int i = 1; i <= n; i++)
+        for (int i = 1; i + (1LL << j) - 1 <= n; i++)
         {
-            stMax[i][0] = a[i];
-            stMin[i][0] = a[i];
-        }
-
-        for (int j = 1; j < LOGN; j++)
-        {
-            for (int i = 1; i + (1 << j) - 1 <= n; i++)
-            {
-                stMax[i][j] = max(stMax[i][j - 1], stMax[i + (1 << (j - 1))][j - 1]);
-                stMin[i][j] = min(stMin[i][j - 1], stMin[i + (1 << (j - 1))][j - 1]);
-            }
+            stMax[i][j] = max(stMax[i][j - 1],
+                              stMax[i + (1LL << (j - 1))][j - 1]);
+            stMin[i][j] = min(stMin[i][j - 1],
+                              stMin[i + (1LL << (j - 1))][j - 1]);
         }
     }
+}
 
-    int queryMax(int l, int r)
-    {
-        int k = lg2v[r - l + 1];
-        return max(stMax[l][k], stMax[r - (1 << k) + 1][k]);
-    }
+int queryMax(int l, int r)
+{
+    int k = lg2_[r - l + 1];
+    return max(stMax[l][k], stMax[r - (1LL << k) + 1][k]);
+}
 
-    int queryMin(int l, int r)
-    {
-        int k = lg2v[r - l + 1];
-        return min(stMin[l][k], stMin[r - (1 << k) + 1][k]);
-    }
+int queryMin(int l, int r)
+{
+    int k = lg2_[r - l + 1];
+    return min(stMin[l][k], stMin[r - (1LL << k) + 1][k]);
 }

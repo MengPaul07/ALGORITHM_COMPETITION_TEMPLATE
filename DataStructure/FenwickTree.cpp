@@ -109,7 +109,7 @@ namespace FenwickTreeKth
     int find(int k, int n)
     {
         int pos = 0;
-        for (int i = 1 << 17; i > 0; i >>= 1)
+        for (int i = 1 << 20; i > 0; i >>= 1)
         {
             int next_pos = pos + i;
             if (next_pos <= n && tree[next_pos] < k)

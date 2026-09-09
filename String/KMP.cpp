@@ -1,105 +1,67 @@
-// KMP Algorithm
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-namespace KMP
+#define int long long
+#define endl "\n"
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define sz(x) (int)(x).size()
+
+const int INF = (1LL << 62);
+const int MOD = 1e9 + 7;
+const int mod = 998244353;
+const int N = 1000005;
+
+string s, p;
+int nxt[N];
+
+// 求模式串的前缀函数
+void getNext()
 {
-vector<int> buildLps(const string &pat) {
-    int m = (int)pat.length();
-    vector<int> lps(m);
-    int len = 0;
-    lps[0] = 0; // lps[i]: pat[0..i] 的最长真前后缀长度
+    int m = sz(p);
+    nxt[0] = 0;
 
-    int i = 1;
-    while (i < m) {
-        if (pat[i] == pat[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len != 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
-}
+    for (int i = 1, j = 0; i < m; i++)
+    {
+        while (j && p[i] != p[j])
+            j = nxt[j - 1];
 
-// 返回所有匹配起点下标（0-based）
-vector<int> searchAll(const string &txt, const string &pat) {
-    if (pat.empty()) return {};
-    int m = (int)pat.length();
-    int n = (int)txt.length();
-
-    vector<int> lps = buildLps(pat);
-    vector<int> pos;
-
-    int i = 0;
-    int j = 0;
-    while (i < n) {
-        if (pat[j] == txt[i]) {
+        if (p[i] == p[j])
             j++;
-            i++;
-        }
 
-        if (j == m) {
-            pos.push_back(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pat[j] != txt[i]) {
-            if (j != 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+        nxt[i] = j;
     }
-    return pos;
-}
 }
 
-void solve(){
-    string s,t;
-    cin >> s >> t;
+// 输出 s 中 p 的所有匹配起点，按 1-based 编号
+void kmp()
+{
+    int n = sz(s), m = sz(p);
 
-    int n = sz(s),m = sz(t);
+    for (int i = 0, j = 0; i < n; i++)
+    {
+        while (j && s[i] != p[j])
+            j = nxt[j - 1];
 
-    string p = t;
+        if (s[i] == p[j])
+            j++;
 
-    t = t + '#' + s;
-
-    vector<int> lps(sz(t));
-
-    int i = 1,len = 0;
-    while(i < sz(t)){
-        if(t[i] == t[len]){
-            len++;
-            lps[i] = len;
-            i++;
-        }
-        else{
-            if(len){
-                len = lps[len - 1];
-            }
-            else{
-                lps[i] = 0;
-                i++;
-            }
+        if (j == m)
+        {
+            cout << i - m + 2 << endl;
+            j = nxt[j - 1];
         }
     }
+}
 
-    for(int i = m + 1;i < sz(t);i++){
-        if(lps[i] == m){
-            cout << i - 2 * m + 1 << endl;
-        }
-    }
+void solve()
+{
+    cin >> s >> p;
 
-    // 输出模式串自己的前缀函数
-    for(int i = 0;i < m;i++){
-        cout << lps[i] << " ";
-    }
+    getNext();
+    kmp();
+
+    for (int i = 0; i < sz(p); i++)
+        cout << nxt[i] << " ";
     cout << endl;
 }
-

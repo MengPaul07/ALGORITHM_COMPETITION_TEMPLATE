@@ -1,104 +1,89 @@
-namespace MinSpanningTree
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 200005;
+const int M = 400005;
+
+struct Edge
 {
-    struct Kruskal
+    int u, v, w;
+};
+
+Edge edge[M];
+int fa[N];
+vector<pair<int, int>> graph[N];
+
+int find(int x)
+{
+    return fa[x] == x ? x : fa[x] = find(fa[x]);
+}
+
+bool merge(int x, int y)
+{
+    x = find(x);
+    y = find(y);
+    if (x == y)
+        return false;
+    fa[x] = y;
+    return true;
+}
+
+// edge[0..m-1] 使用 1..n 的点编号
+int kruskal(int n, int m)
+{
+    for (int i = 1; i <= n; i++)
+        fa[i] = i;
+
+    sort(edge, edge + m, [](const Edge &a, const Edge &b)
     {
-        struct Edge
-        {
-            int u, v, w;
-        };
+        return a.w < b.w;
+    });
 
-        int n;
-        vector<Edge> edges;
-        vector<int> parent, sz;
-
-        explicit Kruskal(int n) : n(n), parent(n), sz(n, 1)
-        {
-            iota(parent.begin(), parent.end(), 0);
-        }
-
-        int find(int x)
-        {
-            if (parent[x] != x)
-                parent[x] = find(parent[x]);
-            return parent[x];
-        }
-
-        bool unite(int x, int y)
-        {
-            x = find(x);
-            y = find(y);
-            if (x == y)
-                return false;
-            if (sz[x] < sz[y])
-                swap(x, y);
-            parent[y] = x;
-            sz[x] += sz[y];
-            return true;
-        }
-
-        void addEdge(int u, int v, int w)
-        {
-            edges.push_back({u, v, w});
-        }
-
-        // 返回最小生成树权值；若图不连通返回 -1
-        int build()
-        {
-            sort(edges.begin(), edges.end(), [](const Edge &a, const Edge &b)
-                 { return a.w < b.w; });
-            int mstWeight = 0;
-            int used = 0;
-            for (const auto &e : edges)
-            {
-                if (unite(e.u, e.v))
-                {
-                    mstWeight += e.w;
-                    used++;
-                }
-            }
-            return used == n - 1 ? mstWeight : -1;
-        }
-    };
-
-    struct Prim
+    int ans = 0, cnt = 0;
+    for (int i = 0; i < m; i++)
     {
-        int n;
-        vector<vector<pair<int, int>>> adj;
-
-        explicit Prim(int n) : n(n), adj(n) {}
-
-        void addEdge(int u, int v, int w)
+        if (merge(edge[i].u, edge[i].v))
         {
-            adj[u].push_back({v, w});
-            adj[v].push_back({u, w});
+            ans += edge[i].w;
+            cnt++;
         }
+    }
 
-        // 返回最小生成树权值；若图不连通返回 -1
-        int build(int start = 0)
+    return cnt == n - 1 ? ans : -1;
+}
+
+void addEdge(int u, int v, int w)
+{
+    graph[u].push_back({v, w});
+    graph[v].push_back({u, w});
+}
+
+int prim(int n, int start = 1)
+{
+    vector<int> vis(n + 1);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
+    q.push({0, start});
+
+    int ans = 0, cnt = 0;
+    while (!q.empty())
+    {
+        auto [w, u] = q.top();
+        q.pop();
+        if (vis[u])
+            continue;
+
+        vis[u] = 1;
+        ans += w;
+        cnt++;
+
+        for (auto [v, nw] : graph[u])
         {
-            priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-            vector<bool> inMst(n, false);
-            pq.push({0, start});
-
-            int mstWeight = 0;
-            int used = 0;
-            while (!pq.empty())
-            {
-                auto [w, u] = pq.top();
-                pq.pop();
-                if (inMst[u])
-                    continue;
-                inMst[u] = true;
-                mstWeight += w;
-                used++;
-
-                for (const auto &[v, nw] : adj[u])
-                {
-                    if (!inMst[v])
-                        pq.push({nw, v});
-                }
-            }
-            return used == n ? mstWeight : -1;
+            if (!vis[v])
+                q.push({nw, v});
         }
-    };
+    }
+
+    return cnt == n ? ans : -1;
 }
