@@ -1,16 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-const int N = 1e6 + 5;
-const int MAXNODE = N * 25;
-
+const int N = 1e6 + 5; const int MAXNODE = N * 25;
 struct Node {
     int val,lc,rc;
 }tree[MAXNODE];
-
-int tot,n,m;
-int a[N],roots[N];
-
+int tot,n,m; int a[N],roots[N];
+// 建立初始版本的主席树，返回覆盖区间 [l,r] 的根节点。
 int build(int l,int r){
     int root = ++tot;
     if(l == r){
@@ -22,7 +17,7 @@ int build(int l,int r){
     tree[root].rc = build(mid + 1,r);
     return root;
 }
-
+// 从旧版本 pre 复制并修改单点 pos，返回新版本根节点。
 int update(int pre,int l,int r,int pos,int val){
     int root = ++tot;
     tree[root] = tree[pre];
@@ -39,24 +34,21 @@ int update(int pre,int l,int r,int pos,int val){
     }
     return root;
 }
-
+// 查询某个主席树版本在位置 pos 上保存的值。
 int query(int root,int l,int r,int pos){
     if(l == r)return tree[root].val;
     int mid = (l + r) / 2;
-    if(pos <= mid) 
-        return query(tree[root].lc,l,mid,pos);
+    if (pos <= mid) return query(tree[root].lc,l,mid,pos);
     else 
         return query(tree[root].rc,mid + 1,r,pos);
 }
-
+// 可持久化线段树：支持基于历史版本的单点修改和单点查询。
 void solve(){
     int n,m;
     cin >> n >> m;
     for(int i = 1;i <= n;i++)
         cin >> a[i];
-    
     roots[0] = build(1,n);
-
     for(int i = 1;i <= m;i++){
         int v,t,p,c;
         cin >> v >> t;
@@ -70,88 +62,61 @@ void solve(){
             roots[i] = roots[v];
         }
     }
-
 }
-
-
 // k-th
 const int N = 2e5 + 5;
-
 struct Node{
-    int l,r;
-    int sum;
+    int l,r; int sum;
 }tree[N << 5];
-
-int root[N];
-int tot;
-
+int root[N]; int tot;
+// 将离散值 pos 插入到主席树新版本 now 中。
 void insert(int pre,int &now,int l,int r,int pos){
     now = ++tot;
     tree[now] = tree[pre];
     tree[now].sum++;
-
-    if(l == r)
-        return;
-
+    if (l == r) return;
     int mid = (l + r) >> 1;
-    if(pos <= mid)
-        insert(tree[pre].l,tree[now].l,l,mid,pos);
+    if (pos <= mid) insert(tree[pre].l,tree[now].l,l,mid,pos);
     else
         insert(tree[pre].r,tree[now].r,mid + 1,r,pos);
 }
-
+// 在版本差 root[v]-root[u] 中查询第 k 小的离散值。
 int query(int u,int v,int l,int r,int k){
-    if(l == r)
-        return l;
-
-    int cnt = tree[tree[v].l].sum - tree[tree[u].l].sum;
-    int mid = (l + r) >> 1;
-
-    if(k <= cnt)
-        return query(tree[u].l,tree[v].l,l,mid,k);
+    if (l == r) return l;
+    int cnt = tree[tree[v].l].sum - tree[tree[u].l].sum; int mid = (l + r) >> 1;
+    if (k <= cnt) return query(tree[u].l,tree[v].l,l,mid,k);
     else
         return query(tree[u].r,tree[v].r,mid + 1,r,k - cnt);
 }
-
+// 查询两个版本在单个离散位置 k 上的计数差。
 int query2(int u,int v,int l,int r,int k){
-    if(l == r)
-        return tree[u].sum - tree[v].sum;
+    if (l == r) return tree[u].sum - tree[v].sum;
     int mid = (l + r) >> 1;
-
-    if(k <= mid)
-        return query2(tree[u].l,tree[v].l,l,mid,k);
+    if (k <= mid) return query2(tree[u].l,tree[v].l,l,mid,k);
     else
         return query2(tree[u].r,tree[v].r,mid + 1,r,k);
 }
-
+// 主席树求区间第 k 小：用 root[r]-root[l-1] 表示区间频次。
 void solve(){
     int n,m;
     cin >> n >> m;
-
     vector<int> a(n + 1);
     vector<int> dis;
-
     for(int i = 1;i <= n;i++){
         cin >> a[i];
         dis.push_back(a[i]);
     }
-
     sort(all(dis));
     dis.erase(unique(all(dis)),dis.end());
-
     auto get = [&](int x){
         return lower_bound(all(dis),x) - dis.begin() + 1;
     };
-
     int len = sz(dis);
-
     for(int i = 1;i <= n;i++)
         insert(root[i - 1],root[i],1,len,get(a[i]));
-
     while(m--){
         int l,r,k;
         cin >> l >> r >> k;
-
         int pos = query(root[l - 1],root[r],1,len,k);
         cout << dis[pos - 1] << endl;
     }
